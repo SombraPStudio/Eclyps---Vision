@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Eclyps Vision transforms any image into structured, reusable information with Gemini."
+    />
+    <title>Eclyps Vision</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <a class="brand" href="#" aria-label="Eclyps Vision home">
+        <span class="brand-mark">◈</span>
+        <span>Eclyps Vision</span>
+      </a>
+      <nav class="header-actions" aria-label="Application actions">
+        <a
+          class="icon-button text-action"
+          href="https://github.com/SombraPStudio/Eclyps---Vision"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Open GitHub repository"
+        >
+          <span aria-hidden="true">GitHub</span>
+        </a>
+        <button class="icon-button" id="settingsButton" type="button" aria-label="Open settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
+            <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.05.05a2 2 0 0 1-2.83 2.83l-.05-.05A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6V20a2 2 0 0 1-4 0v-.08a1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.05.05a2 2 0 1 1-2.83-2.83l.05-.05A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1H4a2 2 0 0 1 0-4h.08a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.05-.05a2 2 0 0 1 2.83-2.83l.05.05A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6V4a2 2 0 0 1 4 0v.08a1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.05-.05a2 2 0 1 1 2.83 2.83l-.05.05A1.7 1.7 0 0 0 19.4 9c.1.36.3.7.6 1H20a2 2 0 0 1 0 4h-.08a1.7 1.7 0 0 0-.52 1Z" />
+          </svg>
+        </button>
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle theme">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3v2M12 19v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M3 12h2M19 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+            <path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" />
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="hero">
+        <div class="hero-content">
+          <p class="eyebrow">◈ Eclyps Vision</p>
+          <h1>Transform Images Into Structured Data</h1>
+          <p class="hero-copy">
+            Extract OCR text, descriptions, semantic tags and structured outputs with one request
+            using your own Gemini API key.
+          </p>
+        </div>
+
+        <form class="upload-panel" id="uploadForm">
+          <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+          <button class="drop-zone" id="dropZone" type="button">
+            <span class="upload-glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 16V4" />
+                <path d="m7 9 5-5 5 5" />
+                <path d="M20 16.5V19a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2.5" />
+              </svg>
+            </span>
+            <span class="drop-title" id="dropTitle">Drag image, paste image, or browse files</span>
+            <span class="drop-meta" id="dropMeta">PNG, JPG, WEBP</span>
+          </button>
+          <button class="primary-button" id="analyzeButton" type="submit">Analyze Image</button>
+          <p class="form-message" id="formMessage" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="loading-section" id="loadingSection" hidden aria-live="polite">
+        <div class="progress-shell">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <p id="loadingMessage">Scanning image...</p>
+      </section>
+
+      <section class="results" id="results" hidden>
+        <div class="image-card">
+          <div class="image-toolbar">
+            <span>Image Preview</span>
+            <div class="tool-group">
+              <button class="tool-button" id="zoomOut" type="button" aria-label="Zoom out">-</button>
+              <button class="tool-button" id="zoomReset" type="button" aria-label="Reset zoom">1:1</button>
+              <button class="tool-button" id="zoomIn" type="button" aria-label="Zoom in">+</button>
+            </div>
+          </div>
+          <div class="image-stage" id="imageStage">
+            <img id="previewImage" alt="Uploaded image preview" draggable="false" />
+          </div>
+        </div>
+
+        <div class="insight-grid">
+          <article class="result-card large">
+            <div class="card-heading">
+              <h2>Description</h2>
+              <button class="copy-button" data-copy="description" type="button">Copy</button>
+            </div>
+            <p id="descriptionOutput"></p>
+          </article>
+
+          <article class="result-card">
+            <div class="card-heading">
+              <h2>OCR Text</h2>
+              <button class="copy-button" data-copy="ocr" type="button">Copy</button>
+            </div>
+            <p id="ocrOutput"></p>
+          </article>
+
+          <article class="result-card">
+            <div class="card-heading">
+              <h2>Semantic Tags</h2>
+              <button class="copy-button" data-copy="tags" type="button">Copy</button>
+            </div>
+            <div class="tag-list" id="tagOutput"></div>
+          </article>
+
+          <article class="result-card">
+            <div class="card-heading">
+              <h2>Alt Text</h2>
+              <button class="copy-button" data-copy="alt" type="button">Copy</button>
+            </div>
+            <p id="altOutput"></p>
+          </article>
+
+          <article class="result-card">
+            <div class="card-heading">
+              <h2>Summary</h2>
+              <button class="copy-button" data-copy="summary" type="button">Copy</button>
+            </div>
+            <p id="summaryOutput"></p>
+          </article>
+        </div>
+
+        <article class="structured-card">
+          <div class="structured-head">
+            <div>
+              <p class="eyebrow compact">Structured Output</p>
+              <h2>Reusable Formats</h2>
+            </div>
+            <div class="tab-list" role="tablist" aria-label="Output format">
+              <button class="tab-button active" data-tab="json" type="button" role="tab">JSON</button>
+              <button class="tab-button" data-tab="markdown" type="button" role="tab">Markdown</button>
+              <button class="tab-button" data-tab="csv" type="button" role="tab">CSV</button>
+            </div>
+          </div>
+          <div class="code-actions">
+            <button class="secondary-button" id="copyStructured" type="button">Copy</button>
+            <button class="secondary-button" id="downloadStructured" type="button">Download</button>
+          </div>
+          <pre class="code-block"><code id="structuredOutput"></code></pre>
+        </article>
+      </section>
+    </main>
+
+    <footer class="app-footer" id="footer" hidden>
+      <span>◈ Eclyps Vision</span>
+      <span>Open Source</span>
+      <span>MIT License</span>
+      <span>Powered by Gemini</span>
+      <a href="https://github.com/SombraPStudio/Eclyps---Vision" target="_blank" rel="noreferrer">GitHub</a>
+    </footer>
+
+    <dialog class="settings-modal" id="settingsModal">
+      <form method="dialog" class="modal-card">
+        <div class="modal-head">
+          <div>
+            <p class="eyebrow compact">Settings</p>
+            <h2>Gemini API Key</h2>
+          </div>
+          <button class="icon-button" id="closeSettings" type="submit" aria-label="Close settings">x</button>
+        </div>
+        <label class="input-label" for="apiKeyInput">API Key</label>
+        <div class="secret-field">
+          <input id="apiKeyInput" type="password" autocomplete="off" placeholder="Paste your Gemini API key" />
+          <button id="toggleKeyVisibility" type="button">Show</button>
+        </div>
+        <p class="privacy-note">Your API key is stored locally and never leaves your browser.</p>
+        <div class="modal-actions">
+          <a class="secondary-button" href="https://aistudio.google.com/apikey" target="_blank" rel="noreferrer">
+            Get Gemini API Key
+          </a>
+          <a
+            class="secondary-button"
+            href="https://github.com/SombraPStudio/Eclyps---Vision"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub Repository
+          </a>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
